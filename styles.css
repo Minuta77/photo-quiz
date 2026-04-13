@@ -1,0 +1,26 @@
+/* Friendly, colorful, modern styles */
+:root{
+  --bg:#f7fbff; --card:#ffffff; --accent:#ff6b6b; --accent2:#6bc1ff; --muted:#7b8aa3; --green:#38b000; --red:#ff4d6d;
+  --radius:14px; --shadow: 0 8px 30px rgba(16,24,40,0.08);
+}
+*{box-sizing:border-box}
+body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:linear-gradient(135deg,#f0fbff 0%, #fff5fb 100%); margin:0; color:#102030}
+.topbar{background:linear-gradient(90deg,var(--accent2),var(--accent)); color:white; padding:20px 24px; text-align:center; box-shadow:0 6px 18px rgba(107,193,255,0.12)}
+.topbar h1{margin:0;font-size:20px;font-weight:700}
+.container{max-width:1000px;margin:20px auto;padding:12px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px}
+.row{display:flex;gap:12px}
+.cta{background:linear-gradient(180deg,var(--accent),#ff4d6d);color:white;border:none;padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:0 6px 18px rgba(255,107,107,0.18);cursor:pointer;transition:transform .12s ease, box-shadow .12s}
+.cta:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(255,107,107,0.18)}
+.muted{background:transparent;border:2px solid rgba(16,32,48,0.06);color:var(--muted);padding:10px;border-radius:12px;cursor:pointer}
+.hidden{display:none}
+.progress{font-weight:600;color:#334; margin-bottom:12px}
+.photo-block{text-align:center}
+.photo-block img{max-width:100%;height:auto;border-radius:10px;box-shadow:0 10px 40px rgba(16,24,40,0.06)}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.option-btn{background:linear-gradient(180deg,var(--accent2),#4baef3);color:white;border:none;padding:14px;border-radius:12px;font-weight:700;cursor:pointer;transition:transform .08s, box-shadow .08s}
+.option-btn:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(75,174,243,0.16)}
+.option-btn.correct{background:linear-gradient(180deg,#34d399,#10b981)}
+.option-btn.wrong{background:linear-gradient(180deg,#ff7b7b,#ff4d6d)}
+.footer{text-align:center;padding:10px;color:#415}
+@media (max-width:600px){.options{grid-template-columns:1fr}.row{flex-direction:column}}

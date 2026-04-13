@@ -1,0 +1,12 @@
+*.py
+*.ps1
+*.json
+app.*.js
+app.js
+exif.min.js
+test.html
+test2.html
+index-pro.html
+index.html
+quiz-new.html
+quiz.html

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🌍 Фото‑Викторина – Котик! (30 фото)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e1040 0%, #12294a 50%, #0b3330 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      color: #f0e8ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .app {
+      background: rgba(30, 22, 60, 0.92);
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 50px;
+      max-width: 1200px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #f9a8d4, #fcd34d, #86efac, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #c4b5d4;
+      font-weight: 500;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Controls Section */
+    #controls {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #2a1650 0%, #1a2e50 100%);
+      border-radius: 20px;
+      border: 2px solid #6b46a0;
+    }
+
+    #controls p {
+      font-size: 1.3rem;
+      color: #e2d8f5; margin-bottom: 25px;
+      font-weight: 500;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #c084fc 0%, #f472b6 100%);
+      color: white;
+      border: none;
+      padding: 18px 50px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 10px 30px rgba(192, 132, 252, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(192, 132, 252, 0.5);
+    }
+
+    .start-btn:active {
+      transform: translateY(-2px);
+    }
+
+    /* Quiz Area */
+    #quizArea {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .progress-bar {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      height: 12px;
+      overflow: hidden;
+      border: 2px solid #6b46a0;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #c084fc 0%, #f472b6 50%, #fb923c 100%);
+      height: 100%;
+      border-radius: 20px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #d4c5f0; margin-bottom: 10px;
+    }
+
+    .quiz-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .photo-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .photo-wrapper {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(135deg, #3b1f6e, #1a3a5c);
+    }
+
+    #quizImage {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 500px;
+      object-fit: cover;
+      transition: all 0.3s ease;
+    }
+
+    #quizImage.fragment-mode {
+      clip-path: inset(40% 40% 40% 40%);
+      transform: scale(2.5);
+    }
+
+    .buttons-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .question-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #c4b5d4;
+      text-align: center;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .attempt-label {
+      font-size: 0.95rem;
+      color: #f9a8d4;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    #options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .option-btn {
+      padding: 16px 24px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .option-btn.pastel-1 {
+      background: linear-gradient(135deg, #7e3a8a, #a855f7);
+    }
+
+    .option-btn.pastel-2 {
+      background: linear-gradient(135deg, #1e5a8a, #3b82f6);
+    }
+
+    .option-btn.pastel-3 {
+      background: linear-gradient(135deg, #7a4a1e, #f59e0b);
+    }
+
+    .option-btn.pastel-4 {
+      background: linear-gradient(135deg, #1e5070, #0891b2);
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .option-btn.correct {
+      background: linear-gradient(135deg, #6bcf7f, #52b788) !important;
+      color: white !important;
+      animation: pulse 0.6s ease;
+    }
+
+    .option-btn.wrong {
+      background: linear-gradient(135deg, #ff6b6b, #ff5252) !important;
+      color: white !important;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    /* Result Section */
+    #result {
+      text-align: center;
+      padding: 50px;
+      background: linear-gradient(135deg, #1e1040 0%, #12294a 100%);
+      border-radius: 20px;
+      border: 3px dashed #c084fc;
+    }
+
+    #result h2 {
+      font-size: 2.5rem;
+      color: #f9a8d4;
+      margin-bottom: 20px;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #score {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f9a8d4, #fcd34d, #86efac);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 20px 0;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #4d96ff, #0084ff);
+      color: white;
+      border: none;
+      padding: 16px 40px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 10px 30px rgba(77, 150, 255, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 20px;
+      display: inline-block;
+    }
+
+    .restart-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(77, 150, 255, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .quiz-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .app {
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      .option-btn {
+        padding: 14px 20px;
+        font-size: 1rem;
+      }
+
+      #quizImage.fragment-mode {
+        transform: scale(3);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>🌍 Привет, Котик! 🐱</h1>
+      <p class="subtitle" id="subtitle">Фото‑Викторина — угадай, где было снято! 📸</p>
+    </header>
+
+    <section id="controls">
+      <button class="start-btn">▶ Котик, начни викторину!</button>
+    </section>
+
+    <section id="quizArea" class="hidden">
+      <div class="progress-text" id="progress">Котик, вопрос 1 / 30</div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 20%"></div>
+      </div>
+
+      <div class="quiz-container">
+        <div class="photo-section">
+          <div class="photo-wrapper">
+            <img src="" alt="Фото для Котика" id="quizImage" class="fragment-mode">
+          </div>
+        </div>
+
+        <div class="buttons-section">
+          <div class="question-label">Котик, где это было?</div>
+          <div class="attempt-label" id="attemptLabel"></div>
+          <div id="options"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="hidden">
+      <h2>🎉 Котик, викторина завершена!</h2>
+      <div id="score"></div>
+      <button class="restart-btn">🔄 Котик, играй заново!</button>
+    </section>
+  </div>
+
+  <script>
+    let quizItems = [];
+    let allPlaces = [];
+    let currentPhotoIndex = 0;
+    let currentAttempt = 0;
+    let score = 0;
+    let answered = false;
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    async function reverseGeo(lat, lon) {
+      // Cache-Key basierend auf Koordinaten (mit Rundung)
+      const cacheKey = `geo_${Math.round(lat * 100)}_${Math.round(lon * 100)}`;
+      
+      // Checke Cache zuerst
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        console.log('📦 Aus Cache:', cacheKey, '=', cached);
+        return cached;
+      }
+
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&accept-language=ru`;
+      try {
+        // Kleine Verzögerung um Rate-Limit zu vermeiden
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        const res = await fetch(url, { headers: { 'User-Agent': 'PhotoQuiz/1.0' } });
+        if (!res.ok) throw new Error('geocode failed');
+        const data = await res.json();
+        const props = data.address || {};
+        const keys = ['city', 'town', 'village', 'county', 'state', 'country'];
+        
+        let label = 'Неизвестно';
+        for (const k of keys) {
+          if (props[k]) {
+            label = props[k];
+            break;
+          }
+        }
+        
+        // Speichere im Cache
+        localStorage.setItem(cacheKey, label);
+        console.log('✅ API:', cacheKey, '=', label);
+        return label;
+      } catch (e) {
+        console.warn('Nominatim failed:', e);
+        return 'Неизвестно';
+      }
+    }
+
+    function getRandomWrongs(correct, numWrongs = 2) {
+      let available = allPlaces.filter(p => p !== correct);
+      let wrongs = [];
+      for (let i = 0; i < numWrongs && available.length > 0; i++) {
+        const idx = Math.floor(Math.random() * available.length);
+        wrongs.push(available[idx]);
+        available.splice(idx, 1);
+      }
+      return wrongs;
+    }
+
+    function renderQuestion(photoIdx) {
+      const item = quizItems[photoIdx];
+      const isFullPhoto = currentAttempt === 1;
+      
+      const progressPercent = ((photoIdx + 1) / quizItems.length) * 100;
+      document.querySelector('.progress-fill').style.width = progressPercent + '%';
+      document.getElementById('progress').textContent = `Котик, вопрос ${photoIdx + 1} / ${quizItems.length}`;
+
+      const attemptLabel = document.getElementById('attemptLabel');
+      if (currentAttempt === 0) {
+        attemptLabel.textContent = '🔍 Фрагмент - первая попытка';
+        attemptLabel.style.color = '#4d96ff';
+      } else {
+        attemptLabel.textContent = '📷 Полное фото - вторая попытка';
+        attemptLabel.style.color = '#ffa502';
+      }
+
+      const img = document.getElementById('quizImage');
+      img.src = item.url;
+      
+      if (!isFullPhoto) {
+        img.classList.add('fragment-mode');
+      } else {
+        img.classList.remove('fragment-mode');
+      }
+
+      const opts = document.getElementById('options');
+      
+      // Wenn es vollständiges Foto nach richtigem Versuch ist, zeige keine Buttons
+      if (isFullPhoto && answered) {
+        opts.innerHTML = '';
+        return;
+      }
+
+      opts.innerHTML = '';
+
+      const correct = item.label || 'Неизвестно';
+      const wrongs = getRandomWrongs(correct, 2);
+      const choices = shuffle([correct, ...wrongs]);
+      const pastelClasses = ['pastel-1', 'pastel-2', 'pastel-3', 'pastel-4'];
+
+      for (let i = 0; i < choices.length; i++) {
+        const choice = choices[i];
+        const btn = document.createElement('button');
+        btn.textContent = choice;
+        btn.className = `option-btn ${pastelClasses[i % 4]}`;
+        btn.onclick = () => {
+          if (answered) return;
+          answered = true;
+
+          if (choice === correct) {
+            // ✅ RICHTIG GERATEN
+            btn.classList.add('correct');
+            score++;
+            opts.querySelectorAll('button').forEach(b => (b.disabled = true));
+            
+            setTimeout(() => {
+              currentAttempt = 1;
+              answered = true; // Behalte answered = true, um keine neuen Buttons zu zeigen
+              renderQuestion(photoIdx);
+              setTimeout(() => nextPhoto(), 2000);
+            }, 1500);
+          } else {
+            // ❌ FALSCH GERATEN
+            if (currentAttempt === 0) {
+              // === FRAGMENT MODE: Nur falsche Antwort rot, richtige nicht zeigen ===
+              btn.classList.add('wrong');
+              opts.querySelectorAll('button').forEach(b => (b.disabled = true));
+              
+              // NICHT die richtige Antwort zeigen!
+              
+              setTimeout(() => {
+                currentAttempt = 1;
+                answered = false; // Setze answered = false für zweiten Versuch
+                renderQuestion(photoIdx);
+              }, 1500);
+            } else {
+              // === FULLPHOTO MODE: Zeige Auswertung (falsch = rot, richtig = grün) ===
+              btn.classList.add('wrong');
+              opts.querySelectorAll('button').forEach(b => (b.disabled = true));
+              
+              // Zeige die richtige Antwort in grün
+              opts.querySelectorAll('button').forEach(b => {
+                if (b.textContent === correct) {
+                  b.classList.add('correct');
+                }
+              });
+
+              setTimeout(() => nextPhoto(), 1500);
+            }
+          }
+        };
+        opts.appendChild(btn);
+      }
+    }
+
+    function nextPhoto() {
+      currentPhotoIndex++;
+      currentAttempt = 0;
+      answered = false;
+
+      if (currentPhotoIndex >= quizItems.length) {
+        showResult();
+        return;
+      }
+      renderQuestion(currentPhotoIndex);
+    }
+
+    function showResult() {
+      document.getElementById('quizArea').classList.add('hidden');
+      document.getElementById('result').classList.remove('hidden');
+      const emoji = score === quizItems.length ? '🏆' : score >= 15 ? '🌟' : '😊';
+      document.getElementById('score').textContent = `${emoji} Котик, вы получили ${score} из ${quizItems.length} правильно!`;
+    }
+
+    document.querySelector('.start-btn').addEventListener('click', async () => {
+      document.getElementById('controls').classList.add('hidden');
+      document.getElementById('quizArea').classList.remove('hidden');
+      
+      // 🗑️ CACHE LÖSCHEN - immer frisch laden!
+      console.log('🗑️ Lösche lokalen Cache...');
+      localStorage.clear();
+      
+      // Zeige Ladeindikator
+      const opts = document.getElementById('options');
+      opts.innerHTML = '<div style="text-align: center; padding: 20px; font-size: 1.2rem; color: #c4b5d4;">⏳ Lädt Fotos...</div>';
+
+      let list = [];
+      let locCache = {};
+      
+      try {
+        // Lade images.json
+        const res = await fetch('quiz-images/images.json?t=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        list = await res.json();
+        console.log('✅ images.json geladen:', list.length, 'Einträge');
+        
+        // Lade locations-cache.json
+        const locRes = await fetch('locations-cache.json?t=' + Date.now());
+        if (locRes.ok) {
+          const locList = await locRes.json();
+          console.log('📋 locList Type:', Array.isArray(locList) ? 'Array' : 'Object', 'Length/Keys:', locList.length || Object.keys(locList).length);
+          
+          if (Array.isArray(locList)) {
+            locList.forEach(item => {
+              locCache[item.file] = item.city || item.country || 'Unknown';
+            });
+          }
+          console.log('✅ locations-cache.json geladen:', Object.keys(locCache).length, 'Einträge');
+        }
+      } catch (e) {
+        console.error('❌ Fehler beim Laden:', e);
+        opts.innerHTML = '<div style="text-align: center; padding: 20px; font-size: 1.1rem; color: #ff6b6b;">Fehler: ' + e.message + '</div>';
+        return;
+      }
+
+      quizItems = [];
+      allPlaces = [];
+      
+      // Nutze Cache-Datei statt API
+      // locCache ist jetzt ein Objekt {file: "city"}
+      const cacheFiles = Object.keys(locCache);
+      console.log('📍 Lade', cacheFiles.length, 'Fotos aus Cache...');
+      
+      for (let i = 0; i < cacheFiles.length; i++) {
+        const filename = cacheFiles[i];
+        const label = locCache[filename];
+        
+        // Finde dieses Foto in images.json
+        const imageEntry = list.find(e => e && e.file === filename);
+        
+        if (imageEntry && imageEntry.lat && imageEntry.lon) {
+          console.log(`📍 ${filename} → ${label}`);
+          
+          quizItems.push({
+            file: filename,
+            url: `quiz-images/${filename}`,
+            label: label,
+            lat: imageEntry.lat,
+            lon: imageEntry.lon
+          });
+          
+          if (!allPlaces.includes(label)) {
+            allPlaces.push(label);
+          }
+        } else {
+          console.warn(`⚠️ ${filename} nicht in images.json gefunden!`);
+        }
+      }
+
+      if (quizItems.length === 0) {
+        console.error('❌ Keine Fotos geladen!');
+        opts.innerHTML = '<div style="text-align: center; padding: 20px; font-size: 1.1rem; color: #ff6b6b;">Котик, нет изображений!</div>';
+        return;
+      }
+
+      console.log('✅ Quiz bereit mit', quizItems.length, 'Fotos');
+      console.log('✅ Gefundene Orte:', allPlaces);
+
+      // Update Subtitle mit Anzahl der Fotos
+      document.getElementById('subtitle').textContent = `Фото‑Викторина (${quizItems.length} фото) — угадай, где было снято! 📸`;
+
+      shuffle(quizItems);
+      currentPhotoIndex = 0;
+      currentAttempt = 0;
+      score = 0;
+      answered = false;
+      renderQuestion(currentPhotoIndex);
+    });
+
+    document.querySelector('.restart-btn').addEventListener('click', () => {
+      location.reload();
+    });
+  </script>
+</body>
+</html>
