@@ -1,6 +1,8 @@
 *.py
 *.ps1
-*.json
+# *.json  (removed - JSON data files needed)
+!quiz-images/images.json
+!locations-cache.json
 app.*.js
 app.js
 exif.min.js
